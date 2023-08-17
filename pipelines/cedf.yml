@@ -1,0 +1,34 @@
+trigger: none
+pr:
+  - main
+
+variables:
+  - name: OPGROUP
+    value: corp
+
+parameters:
+  - name: SUBSCRIPTION_NAME
+    displayName: 'Terraform variable file used for specified Op Group'
+    type: string
+    default: sub-wpp-corp-subopco-lz-cap-p-001
+    values:
+      - sub-wpp-corp-subopco-lz-cap-p-001
+      - sub-wpp-corp-plat-conn-p-001
+      - sub-btodgroup-lz-cap-m-001
+      - sub-corp-wpp-lz-cap-m-01
+      - sub-corp-corp-plat-pam-p-001     
+
+resources:
+  repositories:
+    - repository: templates
+      type: github
+      name: anandctx/azdotestingrep
+      ref: refs/tags/v2.3.0
+      endpoint: "Azure Landing Zone GitHub OAuth Service Connection (USE THIS ONLY ONLY)" # Set in Terraform
+
+extends:
+  template: pipeline_cd.yml@templates
+  parameters:   
+    CHECKOV: true
+    OPGROUP: ${{ variables.OPGROUP }}
+    SUBSCRIPTION_NAME: ${{ parameters.SUBSCRIPTION_NAME }}
